@@ -48,8 +48,8 @@ function getJSONP(url, success) {
 
 getJSONP('http://ip-api.com/json?callback=?', function(data){
     var ip_details = document.getElementById('output');
-
-    ip_details.innerHTML = "ip address :"+ data.query
+    console.log(data);
+    ip_details.innerHTML = "IP address :"+ data.query + "ISP Provider" + data.isp;
 });
 </script>
 </body>
