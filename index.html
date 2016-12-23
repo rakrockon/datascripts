@@ -47,7 +47,9 @@ function getJSONP(url, success) {
 }
 
 getJSONP('http://ip-api.com/json?callback=?', function(data){
-    console.log(data);
+    var ip_details = document.getElementById('output');
+
+    ip_details.innerHTML = "ip address :"+ data.query
 });
 </script>
 </body>
