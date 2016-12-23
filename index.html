@@ -29,16 +29,23 @@
 function getLocation(){navigator.geolocation?navigator.geolocation.getCurrentPosition(showPosition):x.innerHTML="Geolocation is not supported by this browser."}function showPosition(a){var b=new google.maps.Geocoder;getAddress(b,a)}function getAddress(a,b){var c={lat:parseFloat(b.coords.latitude),lng:parseFloat(b.coords.longitude)};a.geocode({location:c},function(a,c){if("OK"===c)if(a[1]){var d=a[1].formatted_address;x.innerHTML="Latitude: "+b.coords.latitude+"<br>Longitude: "+b.coords.longitude+"<br> Address: "+d}else window.alert("No results found");else window.alert("Geocoder failed due to: "+c)})}var nVer=navigator.appVersion,nAgt=navigator.userAgent,browserName=navigator.appName,fullVersion=""+parseFloat(navigator.appVersion),majorVersion=parseInt(navigator.appVersion,10),nameOffset,verOffset,ix;(verOffset=nAgt.indexOf("Opera"))!=-1?(browserName="Opera",fullVersion=nAgt.substring(verOffset+6),(verOffset=nAgt.indexOf("Version"))!=-1&&(fullVersion=nAgt.substring(verOffset+8))):(verOffset=nAgt.indexOf("MSIE"))!=-1?(browserName="Microsoft Internet Explorer",fullVersion=nAgt.substring(verOffset+5)):(verOffset=nAgt.indexOf("Edge"))!=-1?(browserName="Microsoft Edge",fullVersion=nAgt.substring(verOffset+5)):(verOffset=nAgt.indexOf("Chrome"))!=-1?(browserName="Chrome",fullVersion=nAgt.substring(verOffset+7)):(verOffset=nAgt.indexOf("Safari"))!=-1?(browserName="Safari",fullVersion=nAgt.substring(verOffset+7),(verOffset=nAgt.indexOf("Version"))!=-1&&(fullVersion=nAgt.substring(verOffset+8))):(verOffset=nAgt.indexOf("Firefox"))!=-1?(browserName="Firefox",fullVersion=nAgt.substring(verOffset+8)):(nameOffset=nAgt.lastIndexOf(" ")+1)<(verOffset=nAgt.lastIndexOf("/"))&&(browserName=nAgt.substring(nameOffset,verOffset),fullVersion=nAgt.substring(verOffset+1),browserName.toLowerCase()==browserName.toUpperCase()&&(browserName=navigator.appName)),(ix=fullVersion.indexOf(";"))!=-1&&(fullVersion=fullVersion.substring(0,ix)),(ix=fullVersion.indexOf(" "))!=-1&&(fullVersion=fullVersion.substring(0,ix)),majorVersion=parseInt(""+fullVersion,10),isNaN(majorVersion)&&(fullVersion=""+parseFloat(navigator.appVersion),majorVersion=parseInt(navigator.appVersion,10));var OSName="Unknown OS";nVer.indexOf("Win")!=-1&&(OSName="Windows"),nVer.indexOf("Mac")!=-1&&(OSName="MacOS"),nVer.indexOf("X11")!=-1&&(OSName="UNIX"),nVer.indexOf("Linux")!=-1&&(OSName="Linux"),nVer.indexOf("Android ")!=-1&&(OSName="Android"),nVer.indexOf("iPad")==-1&&nVer.indexOf("iPhone")==-1||(OSName="iOS"),document.write("Browser name  = "+browserName+"<br>Full version  = "+fullVersion+"<br>Major version = "+majorVersion+"<br>navigator.appName = "+navigator.appName+"<br>navigator.userAgent = "+navigator.userAgent+"<br>Your OS: "+OSName+"<br>");var x=document.getElementById("demo");
 </script>
 <script type="application/javascript">
+function myIP() {
+    if (window.XMLHttpRequest) xmlhttp = new XMLHttpRequest();
+    else xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
 
-  var xhttp = new XMLHttpRequest();
-  xhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-      console.log(this);
-     document.getElementById("output").innerHTML = this.responseText;
+    xmlhttp.open("GET","http://api.hostip.info/get_html.php",false);
+    xmlhttp.send();
+
+    hostipInfo = xmlhttp.responseText.split("\n");
+
+    for (i=0; hostipInfo.length >= i; i++) {
+        ipAddress = hostipInfo[i].split(":");
+        if ( ipAddress[0] == "IP" ) return ipAddress[1];
     }
-  };
-  xhttp.open("GET", "//ip-api.com/json", true);
-  xhttp.send();
+
+    return false;
+}
+console.log(myIP())
 </script>
 </body>
 </html>
