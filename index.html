@@ -1,7 +1,21 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Client Information</title>
+  <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <style>
+      /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+      #map {
+        height: 400px;
+      }
+      /* Optional: Makes the sample page fill the window. */
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
 	<script async defer
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAvQbOfEGUbH7YbhrIgg90A_YFY1YZCHNg&callback=getLocation">
     </script>
@@ -10,26 +24,154 @@
 
 
 <noscript>
-    <style type="text/css">
-      .content{
-        display: none;
-      }
-    </style>
-    <div style="color: red">
+    <div style="height: 100vh;background-color: red">
       <div>JavaScript is disabled for the browser or a browser add-on is blocking JavaScript to Run on this page.</div>
       Please enable JavaScript or whitelist the page to run JavaScript for best experience
     </div>
 </noscript>
-<div class="content">
-  <p>Here are the details:</p>
-  <p id="demo"></p>
-  <p id="output"></p> 
-</div>
 
+<p>Here are the details:</p>
+<p id="demo"></p>
+<p id="device_info"></p>
+<p id="output"></p>
+<div id="map"></div>
 <script>
-function getLocation(){navigator.geolocation?navigator.geolocation.getCurrentPosition(showPosition):x.innerHTML="Geolocation is not supported by this browser."}function showPosition(a){var b=new google.maps.Geocoder;getAddress(b,a)}function getAddress(a,b){var c={lat:parseFloat(b.coords.latitude),lng:parseFloat(b.coords.longitude)};a.geocode({location:c},function(a,c){if("OK"===c)if(a[1]){var d=a[1].formatted_address;x.innerHTML="Latitude: "+b.coords.latitude+"<br>Longitude: "+b.coords.longitude+"<br> Address: "+d}else window.alert("No results found");else window.alert("Geocoder failed due to: "+c)})}var nVer=navigator.appVersion,nAgt=navigator.userAgent,browserName=navigator.appName,fullVersion=""+parseFloat(navigator.appVersion),majorVersion=parseInt(navigator.appVersion,10),nameOffset,verOffset,ix;(verOffset=nAgt.indexOf("Opera"))!=-1?(browserName="Opera",fullVersion=nAgt.substring(verOffset+6),(verOffset=nAgt.indexOf("Version"))!=-1&&(fullVersion=nAgt.substring(verOffset+8))):(verOffset=nAgt.indexOf("MSIE"))!=-1?(browserName="Microsoft Internet Explorer",fullVersion=nAgt.substring(verOffset+5)):(verOffset=nAgt.indexOf("Edge"))!=-1?(browserName="Microsoft Edge",fullVersion=nAgt.substring(verOffset+5)):(verOffset=nAgt.indexOf("Chrome"))!=-1?(browserName="Chrome",fullVersion=nAgt.substring(verOffset+7)):(verOffset=nAgt.indexOf("Safari"))!=-1?(browserName="Safari",fullVersion=nAgt.substring(verOffset+7),(verOffset=nAgt.indexOf("Version"))!=-1&&(fullVersion=nAgt.substring(verOffset+8))):(verOffset=nAgt.indexOf("Firefox"))!=-1?(browserName="Firefox",fullVersion=nAgt.substring(verOffset+8)):(nameOffset=nAgt.lastIndexOf(" ")+1)<(verOffset=nAgt.lastIndexOf("/"))&&(browserName=nAgt.substring(nameOffset,verOffset),fullVersion=nAgt.substring(verOffset+1),browserName.toLowerCase()==browserName.toUpperCase()&&(browserName=navigator.appName)),(ix=fullVersion.indexOf(";"))!=-1&&(fullVersion=fullVersion.substring(0,ix)),(ix=fullVersion.indexOf(" "))!=-1&&(fullVersion=fullVersion.substring(0,ix)),majorVersion=parseInt(""+fullVersion,10),isNaN(majorVersion)&&(fullVersion=""+parseFloat(navigator.appVersion),majorVersion=parseInt(navigator.appVersion,10));var OSName="Unknown OS";nVer.indexOf("Win")!=-1&&(OSName="Windows"),nVer.indexOf("Mac")!=-1&&(OSName="MacOS"),nVer.indexOf("X11")!=-1&&(OSName="UNIX"),nVer.indexOf("Linux")!=-1&&(OSName="Linux"),nVer.indexOf("Android ")!=-1&&(OSName="Android"),nVer.indexOf("iPad")==-1&&nVer.indexOf("iPhone")==-1||(OSName="iOS"),document.write("Browser name  = "+browserName+"<br>Full version  = "+fullVersion+"<br>Major version = "+majorVersion+"<br>navigator.appName = "+navigator.appName+"<br>navigator.userAgent = "+navigator.userAgent+"<br>Your OS: "+OSName+"<br>");var x=document.getElementById("demo");
-</script>
-<script type="application/javascript">
+
+var nVer = navigator.appVersion;
+var nAgt = navigator.userAgent;
+var browserName  = navigator.appName;
+var fullVersion  = ''+parseFloat(navigator.appVersion); 
+var majorVersion = parseInt(navigator.appVersion,10);
+var nameOffset,verOffset,ix;
+
+// In Opera, the true version is after "Opera" or after "Version"
+if ((verOffset=nAgt.indexOf("Opera"))!=-1) {
+ browserName = "Opera";
+ fullVersion = nAgt.substring(verOffset+6);
+ if ((verOffset=nAgt.indexOf("Version"))!=-1) 
+   fullVersion = nAgt.substring(verOffset+8);
+}
+// In MSIE, the true version is after "MSIE" in userAgent
+else if ((verOffset=nAgt.indexOf("MSIE"))!=-1) {
+ browserName = "Microsoft Internet Explorer";
+ fullVersion = nAgt.substring(verOffset+5);
+}
+
+// In MSIE, the true version is after "MSIE" in userAgent
+else if ((verOffset=nAgt.indexOf("Edge"))!=-1) {
+ browserName = "Microsoft Edge";
+ fullVersion = nAgt.substring(verOffset+5);
+}
+// In Chrome, the true version is after "Chrome" 
+else if ((verOffset=nAgt.indexOf("Chrome"))!=-1) {
+ browserName = "Chrome";
+ fullVersion = nAgt.substring(verOffset+7);
+}
+// In Safari, the true version is after "Safari" or after "Version" 
+else if ((verOffset=nAgt.indexOf("Safari"))!=-1) {
+ browserName = "Safari";
+ fullVersion = nAgt.substring(verOffset+7);
+ if ((verOffset=nAgt.indexOf("Version"))!=-1) 
+   fullVersion = nAgt.substring(verOffset+8);
+}
+// In Firefox, the true version is after "Firefox" 
+else if ((verOffset=nAgt.indexOf("Firefox"))!=-1) {
+ browserName = "Firefox";
+ fullVersion = nAgt.substring(verOffset+8);
+}
+// In most other browsers, "name/version" is at the end of userAgent 
+else if ( (nameOffset=nAgt.lastIndexOf(' ')+1) < 
+          (verOffset=nAgt.lastIndexOf('/')) ) 
+{
+ browserName = nAgt.substring(nameOffset,verOffset);
+ fullVersion = nAgt.substring(verOffset+1);
+ if (browserName.toLowerCase()==browserName.toUpperCase()) {
+  browserName = navigator.appName;
+ }
+}
+// trim the fullVersion string at semicolon/space if present
+if ((ix=fullVersion.indexOf(";"))!=-1)
+   fullVersion=fullVersion.substring(0,ix);
+if ((ix=fullVersion.indexOf(" "))!=-1)
+   fullVersion=fullVersion.substring(0,ix);
+
+majorVersion = parseInt(''+fullVersion,10);
+if (isNaN(majorVersion)) {
+ fullVersion  = ''+parseFloat(navigator.appVersion); 
+ majorVersion = parseInt(navigator.appVersion,10);
+}
+var OSName="Unknown OS";
+if (nVer.indexOf("Win")!=-1) OSName="Windows";
+if (nVer.indexOf("Mac")!=-1) OSName="MacOS";
+if (nVer.indexOf("X11")!=-1) OSName="UNIX";
+if (nVer.indexOf("Linux")!=-1) OSName="Linux";
+if (nVer.indexOf("Android ")!=-1) OSName="Android";
+if (nVer.indexOf("iPad")!=-1 || nVer.indexOf("iPhone")!=-1) OSName="iOS";
+
+var device_info = document.getElementById("device_info");
+
+device_info.innerHTML = ''
+ +'Browser name  = '+browserName+'<br>'
+ +'Full version  = '+fullVersion+'<br>'
+ +'Major version = '+majorVersion+'<br>'
+ +'navigator.appName = '+navigator.appName+'<br>'
+ +'navigator.userAgent = '+navigator.userAgent+'<br>'
+ +'Your OS: '+OSName+'<br>';
+
+var x = document.getElementById("demo");
+
+function getLocation() {
+	
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(showPosition);
+    } else { 
+        x.innerHTML = "Geolocation is not supported by this browser.";
+    }
+}
+function handleLocationError(browserHasGeolocation, infoWindow, pos) {
+  infoWindow.setPosition(pos);
+  infoWindow.setContent(browserHasGeolocation ?
+                      'Error: The Geolocation service failed.' :
+                      'Error: Your browser doesn\'t support geolocation.');
+}
+function showPosition(position) {
+    
+    var geocoder = new google.maps.Geocoder;
+    getAddress(geocoder,position)
+}
+
+function getAddress(geocoder,position) {
+	var latlng = {lat: parseFloat(position.coords.latitude), lng: parseFloat(position.coords.longitude)};
+  var address;
+	geocoder.geocode({'location': latlng}, function(results, status) {
+      if (status === 'OK') {
+        if (results[1]) {
+            address = results[1].formatted_address;
+          	x.innerHTML = "Latitude: " + position.coords.latitude + 
+				"<br>Longitude: " + position.coords.longitude +
+				"<br> Address: "+address;
+          var map = new google.maps.Map(document.getElementById('map'), {
+            center: {lat: -34.397, lng: 150.644},
+            zoom: 15
+          });
+          var infoWindow = new google.maps.InfoWindow({map: map});
+          var pos = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          };
+
+          infoWindow.setPosition(latlng);
+          infoWindow.setContent(address);
+          map.setCenter(latlng);
+        } else {
+          window.alert('No results found');
+        }
+      } else {
+        window.alert('Geocoder failed due to: ' + status);
+      }
+    });
+}
+
 function getJSONP(url, success) {
 
     var ud = '_' + +new Date,
@@ -49,8 +191,10 @@ function getJSONP(url, success) {
 
 getJSONP('https://ipinfo.io/json?callback=?', function(data){
     var ip_details = document.getElementById('output');
-    ip_details.innerHTML = "IP address :"+ data.ip + "<br/> ISP Provider" + data.org;
+    ip_details.innerHTML = "IP address :"+ data.ip + "<br/> ISP Provider :" + data.org;
 });
+
 </script>
+
 </body>
 </html>
