@@ -30,9 +30,15 @@ function getLocation(){navigator.geolocation?navigator.geolocation.getCurrentPos
 </script>
 <script type="application/javascript">
 
-function insertReply(content) {
-    document.getElementById('output').innerHTML = content;
-}
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      console.log(this);
+     document.getElementById("output").innerHTML = this.responseText;
+    }
+  };
+  xhttp.open("GET", "//ip-api.com/json", true);
+  xhttp.send();
 </script>
   <script type="text/javascript" src="//ip-api.com/json?callback=insertReply"></script>
 </body>
