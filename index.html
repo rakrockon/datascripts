@@ -46,10 +46,9 @@ function getJSONP(url, success) {
 
 }
 
-getJSONP('https://ip-api.com/json?callback=?', function(data){
+getJSONP('https://ipinfo.io/json?callback=?', function(data){
     var ip_details = document.getElementById('output');
-    console.log(data);
-    ip_details.innerHTML = "IP address :"+ data.query + "ISP Provider" + data.isp;
+    ip_details.innerHTML = "IP address :"+ data.ip + "<br/> ISP Provider" + data.org;
 });
 </script>
 </body>
